@@ -1,14 +1,22 @@
 <script>
   import Logo from '$lib/logo.svelte';
+  import CopyButton from '$lib/copy-button.svelte';
 
-  let fill = $state('#000000');
+  let logoFill = $state('#000000');
+  let bgFill = $state('#ffffff');
 
   let copied = $state(false);
 
   
   $effect(() => {
-    fill = window.localStorage.getItem('fill') ?? '#000000';
+    logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
+    bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
+  });
 
+
+  $effect(() => {
+    window.localStorage.setItem('logoFill', logoFill);
+    window.localStorage.setItem('bgFill', bgFill);
   });
 
   async function setClipboard(text) {
@@ -19,31 +27,36 @@
   copied = true;
   setTimeout(() => copied = false, 2000);
 }
-
-function oninput() {
-  window.localStorage.setItem('fill', this.value);
-}
 </script>
 
-<!-- <svelte:head>
-  <link rel="icon" href="%3Csvg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='64' height='64' rx='9' fill='white'/%3E%3Cpath d='M28.2295 20.3081C30.5397 24.6542 30.6029 24.6456 35.9625 19.247C42.215 12.9462 47.4589 12.3351 52.4183 17.3327C61.697 26.6807 44.163 52 28.4106 52C26.1194 52 20.8588 48.7829 16.7227 44.8526C8.79176 37.3147 6.89219 28.4845 11.382 20.0278C14.4104 14.3277 25.1485 14.5062 28.2295 20.3081Z' fill='%23{fill.slice(1)}'/%3E%3C/svg%3E%0A">
-  
-</svelte:head> -->
-
-<div class="wrapper">
+<div class="wrapper" style:background={bgFill}>
   <div class="color-picker">
     
-    <label class="color-picker">
-      <!-- <span class="color" style:background={fill}>
-      </span> -->
-      <input  {oninput} type="color" bind:value={fill}/>
-      
-      <span class="color-value" >{fill}</span>
-    </label> <button onclick={() => setClipboard(fill)} class:copied class="clipboard">{copied ? 'скопированно' : 'копировать'}</button>
+    <div class="row">
+      <label onclick={() => setClipboard(logoFill)}>
+        <CopyButton/>
+          <span class="label">Лого: </span>
+      </label>
+        <label class="color-picker">
+        <input type="color" bind:value={logoFill}/>
+        <span class="color-value" >{logoFill}</span>
+      </label>
+    </div>
+
+    <div class="row">
+      <label onclick={() => setClipboard(bgFill)}>
+        <CopyButton/>
+          <span class="label">Фон: </span>
+      </label>
+      <label class="color-picker">
+        <input type="color" bind:value={bgFill}/>
+        <span class="color-value" >{bgFill}</span>
+      </label>
+    </div>
   </div>
   
   <div class="logo">
-    <Logo {fill}/>
+    <Logo fill={logoFill}/>
   </div>
 </div>
 
@@ -54,20 +67,37 @@ function oninput() {
     margin: 0;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
+  .row {
+    display: flex;
+    align-items: baseline;
+    /* justify-content: center; */
+    margin-bottom: .5rem;
+  }
+
+  .label {
+    display: inline-block;
+    min-width: 3rem;
+    /* padding: 0.2rem .5rem; */
+    opacity: .5;
+  }
   .wrapper {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     padding: 1rem;
+    width: 100vw;
+    min-height: 100vh;
+    min-height: 100dvh;
     /* align-items: center; */
   }
 
   .logo{
     flex-grow: 1;
+    display: flex;
   }
 
   .color-picker {
-    height: 2rem;
     line-height: 2rem;
     cursor: pointer;
   }
@@ -98,7 +128,5 @@ function oninput() {
     vertical-align: middle;
     border-radius: .3rem;
   }
-  input {
-    /* display: none; */
-  }
+
 </style>
