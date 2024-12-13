@@ -2,17 +2,14 @@
   import Logo from '$lib/logo.svelte';
   import CopyButton from '$lib/copy-button.svelte';
 
-  import {page} from '$app/stores';
-  const {children} = $props();
-  
-  let [logoHex, bgHex] = $derived($page.url.pathname.slice(1).split('/'));
-  
-  let logoFill = $state('#' + (logoHex ?? '000000'));
-  let bgFill = $state('#' + (bgHex ?? 'ffffff'));
-  
+  const {children, data} = $props();
+  const {logoColor, bgColor, isMainPage} = data;
+
+  let logoFill = $state(logoColor);
+  let bgFill = $state(bgColor);
 
   $effect(() => {
-    if ($page.url.pathname !== '/')
+    if (isMainPage)
     return;
     logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
     bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
@@ -22,7 +19,7 @@
 
 
   $effect(() => {
-    if ($page.url.pathname !== '/')
+    if (isMainPage)
     return;
     window.localStorage.setItem('logoFill', logoFill);
     window.localStorage.setItem('bgFill', bgFill);
@@ -37,7 +34,7 @@
 
 
 function invertHex(hex) {
-  return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
+  // return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
 }
 
 
@@ -47,6 +44,8 @@ function invertHex(hex) {
 <svelte:head>
   <link rel="icon" href={faviconPath} />
 </svelte:head>
+
+{JSON.stringify(data)}
 
 <div class="wrapper" style="background: {bgFill};--color: {invertHex(bgFill)}">
   <div class="color-picker">
