@@ -2,48 +2,47 @@
   import Logo from '$lib/logo.svelte';
   import CopyButton from '$lib/copy-button.svelte';
 
-  import {goto} from '$app/navigation';
   import {page} from '$app/stores';
-
-  
   const {children} = $props();
   
-  // let logoFill = $state('#000000');
-  // let bgFill = $state('#ffffff');
-
   let [logoHex, bgHex] = $derived($page.url.pathname.slice(1).split('/'));
+  
+  let logoFill = $state('#' + (logoHex ?? '000000'));
+  let bgFill = $state('#' + (bgHex ?? 'ffffff'));
+  
 
-  let logoFill = $derived('#' + (logoHex || '000000'));
-  let bgFill = $derived('#' + (bgHex || 'ffffff'));
+  $effect(() => {
+    if ($page.url.pathname !== '/')
+    return;
+    logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
+    bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
+  });
 
-  // $effect(() => {
-  //   logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
-  //   bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
-  // });
+  let faviconPath = $derived('data:image/svg+xml;base64,' + btoa(`<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="9" fill="${bgFill}"/><path d="M28.2295 20.3081C30.5397 24.6542 30.6029 24.6456 35.9625 19.247C42.215 12.9462 47.4589 12.3351 52.4183 17.3327C61.697 26.6807 44.163 52 28.4106 52C26.1194 52 20.8588 48.7829 16.7227 44.8526C8.79176 37.3147 6.89219 28.4845 11.382 20.0278C14.4104 14.3277 25.1485 14.5062 28.2295 20.3081Z" fill="${logoFill}"/></svg>`));
 
 
-  // $effect(() => {
-  //   window.localStorage.setItem('logoFill', logoFill);
-  //   window.localStorage.setItem('bgFill', bgFill);
-  // });
+  $effect(() => {
+    if ($page.url.pathname !== '/')
+    return;
+    window.localStorage.setItem('logoFill', logoFill);
+    window.localStorage.setItem('bgFill', bgFill);
+  });
 
   async function setClipboard(text) {
   const type = "text/plain";
   const blob = new Blob([text], { type });
   const data = [new ClipboardItem({ [type]: blob })];
   await navigator.clipboard.write(data);
-}
+};
 
-function createOnchange(type) {
-  return function() {
-    if (type === 'logo')
-      goto(`/${this.value.slice(1)}/${bgFill.slice(1)}`);
 
-      else if (type === 'bg')
-      goto(`/${logoFill.slice(1)}/${this.value.slice(1)}/}`);
-  }
-}
+
 </script>
+
+
+<svelte:head>
+  <link rel="icon" href={faviconPath} />
+</svelte:head>
 
 <div class="wrapper" style:background={bgFill}>
   <div class="color-picker">
@@ -54,7 +53,7 @@ function createOnchange(type) {
           <span class="label">Лого: </span>
       </label>
         <label class="color-picker">
-        <input type="color" onchange={createOnchange('logo')} value={logoFill}/>
+        <input type="color" bind:value={logoFill}/>
         <span class="color-value" >{logoFill}</span>
       </label>
     </div>
@@ -65,16 +64,19 @@ function createOnchange(type) {
           <span class="label">Фон: </span>
       </label>
       <label class="color-picker">
-        <input type="color" onchange={createOnchange('bg')} value={bgFill}/>
+        <input type="color" bind:value={bgFill}/>
         <span class="color-value" >{bgFill}</span>
       </label>
     </div>
   </div>
   
   <div class="logo">
-    
-    <!-- {@render children()} -->
+    <!-- {@render children(logoFill)} -->
     <Logo fill={logoFill}/>
+  </div>
+
+  <div class="share">
+    <button onclick={() => setClipboard(`${location.origin}/${logoFill.slice(1)}/${bgFill.slice(1)}`)} class="share-button">Скопировать ссылку</button>
   </div>
 </div>
 
@@ -86,11 +88,23 @@ function createOnchange(type) {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
+  .share {
+    text-align: center;
+  }
+
+  .share-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    opacity: .4;
+    color: #ffffff;
+    mix-blend-mode: exclusion;
+  }
+
   .row {
-    display: flex;
-    align-items: baseline;
-    /* justify-content: center; */
-    margin-bottom: .5rem;
+    /* display: flex; */
+    /* align-items: baseline; */
   }
 
   .label {
