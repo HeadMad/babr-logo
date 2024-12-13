@@ -81,7 +81,7 @@ function copyLink() {
   </div>
 
   <div class="share">
-    <button onclick={() => copyLink()} class="share-button">Отправь друзьям ссылку</button>
+    <button onclick={() => copyLink()} class="share-button">Ссылка на эти цвета</button>
   </div>
 </div>
 
@@ -102,7 +102,7 @@ function copyLink() {
     padding: 0.5rem 1rem;
     opacity: .6;
     color: var(--color);
-
+    text-decoration: underline;
   }
 
   .label {
@@ -141,23 +141,5 @@ function copyLink() {
     /* border-bottom: 1px dashed; */
   }
 
-  .clipboard {
-    margin-left: 1rem;
-    opacity: .5;
-  }
-
-  .clipboard.copied {
-    background: none;
-    border: none;
-  }
-  
-
-  .color {
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    vertical-align: middle;
-    border-radius: .3rem;
-  }
 
 </style>
