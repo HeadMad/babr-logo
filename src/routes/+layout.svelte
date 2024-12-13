@@ -9,7 +9,7 @@
   let bgFill = $state(bgColor);
 
   $effect(() => {
-    if (isMainPage)
+    if (!isMainPage)
     return;
     logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
     bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
@@ -19,7 +19,7 @@
 
 
   $effect(() => {
-    if (isMainPage)
+    if (!isMainPage)
     return;
     window.localStorage.setItem('logoFill', logoFill);
     window.localStorage.setItem('bgFill', bgFill);
@@ -34,7 +34,7 @@
 
 
 function invertHex(hex) {
-  // return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
+  return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
 }
 
 
@@ -44,8 +44,6 @@ function invertHex(hex) {
 <svelte:head>
   <link rel="icon" href={faviconPath} />
 </svelte:head>
-
-{JSON.stringify(data)}
 
 <div class="wrapper" style="background: {bgFill};--color: {invertHex(bgFill)}">
   <div class="color-picker">
