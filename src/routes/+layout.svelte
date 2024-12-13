@@ -36,6 +36,10 @@
 };
 
 
+function invertHex(hex) {
+  return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
+}
+
 
 </script>
 
@@ -44,7 +48,7 @@
   <link rel="icon" href={faviconPath} />
 </svelte:head>
 
-<div class="wrapper" style:background={bgFill}>
+<div class="wrapper" style="background: {bgFill};--color: {invertHex(bgFill)}">
   <div class="color-picker">
     
     <div class="row">
@@ -83,10 +87,7 @@
 
 <style>
 
-  :global(body) {
-    margin: 0;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+  
 
   .share {
     text-align: center;
@@ -94,17 +95,13 @@
 
   .share-button {
     border: none;
+    border-radius: .2rem;
     background: none;
     cursor: pointer;
     padding: 0.5rem 1rem;
-    opacity: .4;
-    color: #ffffff;
-    mix-blend-mode: exclusion;
-  }
+    opacity: .6;
+    color: var(--color);
 
-  .row {
-    /* display: flex; */
-    /* align-items: baseline; */
   }
 
   .label {
@@ -121,6 +118,7 @@
     width: 100vw;
     min-height: 100vh;
     min-height: 100dvh;
+    color: var(--color, currentColor);
     /* align-items: center; */
   }
 
