@@ -37,6 +37,10 @@ function invertHex(hex) {
   return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
 }
 
+function copyLink() {
+  setClipboard(`${location.origin}/${logoFill.slice(1)}/${bgFill.slice(1)}`);
+}
+
 
 </script>
 
@@ -77,7 +81,7 @@ function invertHex(hex) {
   </div>
 
   <div class="share">
-    <button onclick={() => setClipboard(`${location.origin}/${logoFill.slice(1)}/${bgFill.slice(1)}`)} class="share-button">Скопировать ссылку</button>
+    <button onclick={() => copyLink()} class="share-button">Отправь друзьям ссылку</button>
   </div>
 </div>
 
