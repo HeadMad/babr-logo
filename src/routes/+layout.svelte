@@ -32,15 +32,17 @@
   await navigator.clipboard.write(data);
 };
 
+function copyLink() {
+  setClipboard(`${location.origin}/${logoFill.slice(1)}/${bgFill.slice(1)}`);
+}
 
 function invertHex(hex) {
   return '#' + (Number(`0x1${hex.slice(1)}`) ^ 0xFFFFFF).toString(16).substr(1);
 }
 
-function copyLink() {
-  setClipboard(`${location.origin}/${logoFill.slice(1)}/${bgFill.slice(1)}`);
+function getContrast50(hexcolor) {
+   return (parseInt(hexcolor.slice(1), 16) > 0xffffff / 2) ? '#000000' : '#ffffff';
 }
-
 
 </script>
 
@@ -49,7 +51,7 @@ function copyLink() {
   <link rel="icon" href={faviconPath} />
 </svelte:head>
 
-<div class="wrapper" style="background: {bgFill};--color: {invertHex(bgFill)}">
+<div class="wrapper" style="background: {bgFill};--color: {getContrast50(bgFill)}">
   <div class="color-picker">
     
     <div class="row">
