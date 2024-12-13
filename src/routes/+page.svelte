@@ -1,9 +1,18 @@
 <script>
+  import {onMount} from 'svelte';
   import Logo from '$lib/logo.svelte';
 
-  let fill = $state('#f00');
+  let fill = $state('#000000');
 
   let copied = $state(false);
+
+  onMount(() => {
+    fill = document.localStorage.getItem('fill') ?? '#000000';
+  });
+
+  $effect(() => {
+    document.localStorage.setItem('fill', fill);
+  })
 
   async function setClipboard(text) {
   const type = "text/plain";
@@ -23,11 +32,13 @@
 <div class="wrapper">
   <div class="color-picker">
     
-    <label style:background={fill}>
+    <label class="color-picker">
+      <span class="color" style:background={fill}>
+      </span>
       <input type="color" bind:value={fill}/>
-    </label>
-    
-    <span  class="color-value" onclick={() => setClipboard(fill)}>{fill}</span> <small class:copied class="clipboard">скопированно</small>
+      
+      <span style:color={fill} class="color-value" >{fill}</span>
+    </label> <button onclick={() => setClipboard(fill)} class:copied class="clipboard">{copied ? 'скопированно' : 'копировать'}</button>
   </div>
   
   <div class="logo">
@@ -57,29 +68,29 @@
   .color-picker {
     height: 2rem;
     line-height: 2rem;
+    cursor: pointer;
   }
   
   .color-value {
     font-size: 1.2rem;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
-    cursor: pointer;
     border-bottom: 1px dashed;
   }
 
   .clipboard {
-    margin-left: .5rem;
-    opacity: 0;
-  }
-  
-  .clipboard.copied {
-    transition: .3;
-    opacity: .6;
+    margin-left: 1rem;
+    opacity: .5;
   }
 
-  label {
+  .clipboard.copied {
+    background: none;
+    border: none;
+  }
+  
+
+  .color {
     display: inline-block;
-    margin-right: 1rem;
     width: 2rem;
     height: 2rem;
     vertical-align: middle;
