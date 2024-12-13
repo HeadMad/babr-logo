@@ -2,30 +2,46 @@
   import Logo from '$lib/logo.svelte';
   import CopyButton from '$lib/copy-button.svelte';
 
-  let logoFill = $state('#000000');
-  let bgFill = $state('#ffffff');
-
-  let copied = $state(false);
+  import {goto} from '$app/navigation';
+  import {page} from '$app/stores';
 
   
-  $effect(() => {
-    logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
-    bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
-  });
+  const {children} = $props();
+  
+  // let logoFill = $state('#000000');
+  // let bgFill = $state('#ffffff');
+
+  let [logoHex, bgHex] = $derived($page.url.pathname.slice(1).split('/'));
+
+  let logoFill = $derived('#' + (logoHex || '000000'));
+  let bgFill = $derived('#' + (bgHex || 'ffffff'));
+
+  // $effect(() => {
+  //   logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
+  //   bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
+  // });
 
 
-  $effect(() => {
-    window.localStorage.setItem('logoFill', logoFill);
-    window.localStorage.setItem('bgFill', bgFill);
-  });
+  // $effect(() => {
+  //   window.localStorage.setItem('logoFill', logoFill);
+  //   window.localStorage.setItem('bgFill', bgFill);
+  // });
 
   async function setClipboard(text) {
   const type = "text/plain";
   const blob = new Blob([text], { type });
   const data = [new ClipboardItem({ [type]: blob })];
   await navigator.clipboard.write(data);
-  copied = true;
-  setTimeout(() => copied = false, 2000);
+}
+
+function createOnchange(type) {
+  return function() {
+    if (type === 'logo')
+      goto(`/${this.value.slice(1)}/${bgFill.slice(1)}`);
+
+      else if (type === 'bg')
+      goto(`/${logoFill.slice(1)}/${this.value.slice(1)}/}`);
+  }
 }
 </script>
 
@@ -38,7 +54,7 @@
           <span class="label">Лого: </span>
       </label>
         <label class="color-picker">
-        <input type="color" bind:value={logoFill}/>
+        <input type="color" onchange={createOnchange('logo')} value={logoFill}/>
         <span class="color-value" >{logoFill}</span>
       </label>
     </div>
@@ -49,13 +65,15 @@
           <span class="label">Фон: </span>
       </label>
       <label class="color-picker">
-        <input type="color" bind:value={bgFill}/>
+        <input type="color" onchange={createOnchange('bg')} value={bgFill}/>
         <span class="color-value" >{bgFill}</span>
       </label>
     </div>
   </div>
   
   <div class="logo">
+    
+    <!-- {@render children()} -->
     <Logo fill={logoFill}/>
   </div>
 </div>
