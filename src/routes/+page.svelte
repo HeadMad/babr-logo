@@ -33,8 +33,8 @@
   <div class="color-picker">
     
     <label class="color-picker">
-      <span class="color" style:background={fill}>
-      </span>
+      <!-- <span class="color" style:background={fill}>
+      </span> -->
       <input type="color" bind:value={fill}/>
       
       <span style:color={fill} class="color-value" >{fill}</span>
@@ -97,6 +97,6 @@
     border-radius: .3rem;
   }
   input {
-    display: none;
+    /* display: none; */
   }
 </style>
