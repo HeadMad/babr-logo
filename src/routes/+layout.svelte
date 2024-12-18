@@ -8,22 +8,24 @@
   let logoFill = $state(logoColor);
   let bgFill = $state(bgColor);
 
-  $effect(() => {
-    if (!isMainPage)
-    return;
-    logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
-    bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
-  });
+  // $effect(() => {
+  //   if (!isMainPage)
+  //   return;
+  //   logoFill = window.localStorage.getItem('logoFill') ?? '#000000';
+  //   bgFill = window.localStorage.getItem('bgFill') ?? '#ffffff';
+  // });
+  
+  // $effect(() => {
+  //   if (!isMainPage)
+  //   return;
+  //   window.localStorage.setItem('logoFill', logoFill);
+  //   window.localStorage.setItem('bgFill', bgFill);
+  // });
 
+  
   let faviconPath = $derived('data:image/svg+xml;base64,' + btoa(`<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="9" fill="${bgFill}"/><path d="M28.2295 20.3081C30.5397 24.6542 30.6029 24.6456 35.9625 19.247C42.215 12.9462 47.4589 12.3351 52.4183 17.3327C61.697 26.6807 44.163 52 28.4106 52C26.1194 52 20.8588 48.7829 16.7227 44.8526C8.79176 37.3147 6.89219 28.4845 11.382 20.0278C14.4104 14.3277 25.1485 14.5062 28.2295 20.3081Z" fill="${logoFill}"/></svg>`));
 
 
-  $effect(() => {
-    if (!isMainPage)
-    return;
-    window.localStorage.setItem('logoFill', logoFill);
-    window.localStorage.setItem('bgFill', bgFill);
-  });
 
   async function setClipboard(text) {
   const type = "text/plain";
